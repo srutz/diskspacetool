@@ -38,15 +38,19 @@ MainWindow::MainWindow(QWidget *parent)
     });
 }
 
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow() {
     delete ui;
 }
 
-void MainWindow::showAbout()
-{
+void MainWindow::showAbout() {
     AboutDialog d(this);
     d.exec();
+}
+
+void MainWindow::newScan() {
+    auto state = ApplicationState::instance();
+    state->setScanResult(ScanResult());
+    state->setGuiState(CHOOSE_DIRECTORY);
 }
 
 void MainWindow::applyGuiState() {

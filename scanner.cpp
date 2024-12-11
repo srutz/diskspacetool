@@ -10,12 +10,12 @@ Scanner::Scanner(QObject *parent)
 void Scanner::startWork() {
     auto state = ApplicationState::instance();
     ScanResult result;
-    processDirectory(result, state->rootDirectory());
+    processDirectory(result, nullptr, state->rootDirectory());
     state->setScanResult(result);
     emit completed();
 }
 
-void Scanner::processDirectory(ScanResult &result, const QString &directoryPath) {
+void Scanner::processDirectory(ScanResult &result, ScanEntry* parent, const QString &directoryPath) {
     qDebug() << "processing " << directoryPath;
     QDir dir(directoryPath);
     if (!dir.exists()) {
@@ -31,18 +31,19 @@ void Scanner::processDirectory(ScanResult &result, const QString &directoryPath)
         dirSize += f.size();
         count++;
     }
-    ScanEntry entry = {
+    auto entry = make_shared<ScanEntry>(ScanEntry{
         .path = directoryPath,
         .size = dirSize,
         .fileCount = count,
-    };
+        .parent = parent,
+    });
+
     result.entries.emplace_back(entry);
     emit progress(directoryPath, result.entries.size());
 
-    QStringList subDirs = dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
+    QStringList subDirs = dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot | QDir::NoSymLinks);
     for (const QString &subDir : subDirs) {
         QString subDirPath = dir.absoluteFilePath(subDir);
-        //sqDebug() << "Entering directory:" << subDirPath;
-        processDirectory(result, subDirPath);
+        processDirectory(result, entry.get(), subDirPath);
     }
 }

@@ -48,6 +48,7 @@
     <property name="title">
      <string>&amp;File</string>
     </property>
+    <addaction name="actionNewScan"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
@@ -68,6 +69,11 @@
   <action name="actionAbout">
    <property name="text">
     <string>&amp;About</string>
+   </property>
+  </action>
+  <action name="actionNewScan">
+   <property name="text">
+    <string>&amp;New Scan</string>
    </property>
   </action>
  </widget>
@@ -105,8 +111,25 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionNewScan</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>newScan()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>showAbout()</slot>
+  <slot>newScan()</slot>
  </slots>
 </ui>

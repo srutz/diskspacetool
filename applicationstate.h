@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <vector>
+#include <memory>
 
 using namespace std;
 
@@ -16,10 +17,11 @@ struct ScanEntry {
     QString path;
     qint64 size;
     int fileCount;
+    ScanEntry* parent = nullptr;
 };
 
 struct ScanResult {
-    vector<ScanEntry> entries;
+    vector<shared_ptr<ScanEntry>> entries;
 };
 
 class ApplicationState : public QObject

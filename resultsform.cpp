@@ -4,6 +4,7 @@
 #include <QString>
 #include <QTextStream>
 #include <QPlainTextEdit>
+#include <QTabWidget>
 
 ResultsForm::ResultsForm(QWidget *parent)
     : QWidget{parent}
@@ -17,8 +18,11 @@ ResultsForm::ResultsForm(QWidget *parent)
     textArea->setReadOnly(true);
     textArea->setWordWrapMode(QTextOption::NoWrap);
 
+    auto tabs = new QTabWidget(this);
+    tabs->addTab(textArea, "Plaintext");
+
     auto contentLayout = new QVBoxLayout(content);
-    contentLayout->addWidget(textArea);
+    contentLayout->addWidget(tabs);
 
     auto state = ApplicationState::instance();
     connect(state, &ApplicationState::guiStateChanged, this, [=] {
@@ -27,7 +31,11 @@ ResultsForm::ResultsForm(QWidget *parent)
             QTextStream stream(&buffer);
             auto result = state->scanResult();
             for (const auto &entry: result.entries) {
-                stream << entry.path << " " << "\n";
+                stream << entry->path;
+                if (entry->parent) {
+                    stream << " " << entry->parent->path;
+                }
+                stream << "\n";
             }
             textArea->setPlainText(buffer);
         }

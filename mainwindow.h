@@ -23,6 +23,7 @@ public:
 
 public slots:
     void showAbout();
+    void newScan();
 
 private:
     Ui::MainWindow *ui;
