@@ -17,10 +17,10 @@
    <string notr="true">background-color: orange;</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
+   <item alignment="Qt::AlignmentFlag::AlignHCenter">
     <widget class="QPushButton" name="chooseDirectory">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>

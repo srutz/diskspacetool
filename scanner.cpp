@@ -2,10 +2,9 @@
 #include "applicationstate.h"
 #include <QDir>
 #include <QDebug>
+#include "guard.h"
 
-struct CancelException {
-
-};
+struct CancelException {};
 
 Scanner::Scanner(QObject *parent)
     : QObject{parent}
@@ -13,6 +12,9 @@ Scanner::Scanner(QObject *parent)
 
 void Scanner::startWork() {
     auto state = ApplicationState::instance();
+    Guard g([=] {
+        state->setCancelRequest(false);
+    });
     ScanResult result;
     try {
         processDirectory(result, nullptr, state->rootDirectory());
@@ -21,7 +23,6 @@ void Scanner::startWork() {
     } catch (CancelException signal) {
         emit cancelled();
     }
-
 }
 
 void Scanner::processDirectory(ScanResult &result, ScanEntry* parent, const QString &directoryPath) {

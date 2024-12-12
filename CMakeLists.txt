@@ -46,6 +46,8 @@ else()
             resultsform.h resultsform.cpp
             toast.h
             util.h util.cpp
+            guard.h
+
 
 
         )
