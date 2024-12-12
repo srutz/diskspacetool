@@ -3,6 +3,7 @@
 #include <QProgressBar>
 #include <QLabel>
 #include <QThread>
+#include <QPushButton>
 #include "scanner.h"
 #include "applicationstate.h"
 
@@ -22,11 +23,20 @@ ScanForm::ScanForm(QWidget *parent)
     label->setAlignment(Qt::AlignCenter);
     label->setWordWrap(true);
 
+    auto state = ApplicationState::instance();
+
+    auto cancelButton = new QPushButton("Cancel Scan...", this);
+    connect(cancelButton, &QPushButton::clicked, this, [=] {
+        if (state->guiState() == SCANNING) {
+
+        }
+    });
+
     auto contentLayout = new QVBoxLayout(content);
     contentLayout->addWidget(label);
+    contentLayout->addWidget(cancelButton);
     contentLayout->addWidget(progressBar);
 
-    auto state = ApplicationState::instance();
     connect(state, &ApplicationState::guiStateChanged, this, [=] {
         if (state->guiState() == SCANNING) {
             auto thread = new QThread();
