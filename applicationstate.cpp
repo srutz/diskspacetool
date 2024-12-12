@@ -24,4 +24,13 @@ void ApplicationState::setScanResult(const ScanResult &scanResult) {
     emit scanResultChanged();
 }
 
+void ApplicationState::setCancelRequest(bool cancelRequest) {
+    if (this->m_cancelRequest == cancelRequest) {
+        return;
+    }
+    this->m_cancelRequest = cancelRequest;
+    emit cancelRequestChanged();
+}
+
+
 

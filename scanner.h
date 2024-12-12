@@ -19,6 +19,7 @@ public slots:
 
 signals:
     void completed();
+    void cancelled();
     void progress(const QString &currentPath, int counter);
 
 private:

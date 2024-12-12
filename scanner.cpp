@@ -3,6 +3,10 @@
 #include <QDir>
 #include <QDebug>
 
+struct CancelException {
+
+};
+
 Scanner::Scanner(QObject *parent)
     : QObject{parent}
 {}
@@ -10,12 +14,21 @@ Scanner::Scanner(QObject *parent)
 void Scanner::startWork() {
     auto state = ApplicationState::instance();
     ScanResult result;
-    processDirectory(result, nullptr, state->rootDirectory());
-    state->setScanResult(result);
-    emit completed();
+    try {
+        processDirectory(result, nullptr, state->rootDirectory());
+        state->setScanResult(result);
+        emit completed();
+    } catch (CancelException signal) {
+        emit cancelled();
+    }
+
 }
 
 void Scanner::processDirectory(ScanResult &result, ScanEntry* parent, const QString &directoryPath) {
+    auto state = ApplicationState::instance();
+    if (state->cancelRequest()) {
+        throw CancelException();
+    }
     qDebug() << "processing " << directoryPath;
     QDir dir(directoryPath);
     if (!dir.exists()) {

@@ -44,6 +44,8 @@ else()
             applicationstate.h applicationstate.cpp
             scanner.h scanner.cpp
             resultsform.h resultsform.cpp
+            toast.h
+            util.h util.cpp
 
 
         )

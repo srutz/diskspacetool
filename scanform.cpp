@@ -6,6 +6,7 @@
 #include <QPushButton>
 #include "scanner.h"
 #include "applicationstate.h"
+#include "toast.h"
 
 ScanForm::ScanForm(QWidget *parent)
     : QWidget{parent}
@@ -20,22 +21,31 @@ ScanForm::ScanForm(QWidget *parent)
     progressBar->setMaximum(0);
 
     auto label = new QLabel("Scanning ...", this);
+    label->setFixedWidth(this->width());
     label->setAlignment(Qt::AlignCenter);
-    label->setWordWrap(true);
+    label->setWordWrap(false);
 
     auto state = ApplicationState::instance();
 
-    auto cancelButton = new QPushButton("Cancel Scan...", this);
+    auto cancelButton = new QPushButton("Cancel Scan", this);
     connect(cancelButton, &QPushButton::clicked, this, [=] {
         if (state->guiState() == SCANNING) {
-
+            state->setCancelRequest(true);
         }
     });
+    cancelButton->setFixedWidth(240);
+    QWidget *buttonPanel = new QWidget(this);
+    auto buttonPanelLayout = new QHBoxLayout(buttonPanel);
+    buttonPanelLayout->addWidget(cancelButton);
+
 
     auto contentLayout = new QVBoxLayout(content);
+    contentLayout->addStretch();
     contentLayout->addWidget(label);
-    contentLayout->addWidget(cancelButton);
+    contentLayout->addSpacing(32);
     contentLayout->addWidget(progressBar);
+    contentLayout->addStretch();
+    contentLayout->addWidget(buttonPanel);
 
     connect(state, &ApplicationState::guiStateChanged, this, [=] {
         if (state->guiState() == SCANNING) {
@@ -49,6 +59,11 @@ ScanForm::ScanForm(QWidget *parent)
             connect(scanner, &Scanner::completed, this, [=] {
                 auto state = ApplicationState::instance();
                 state->setGuiState(RESULTS);
+            });
+            connect(scanner, &Scanner::cancelled, this, [=] {
+                auto state = ApplicationState::instance();
+                state->setGuiState(CHOOSE_DIRECTORY);
+                Toast::showToast(this, "Your scan was cancelled");
             });
             connect(thread, &QThread::started, scanner, &Scanner::startWork);
             thread->start();

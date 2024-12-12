@@ -43,10 +43,14 @@ public:
     ScanResult scanResult() const { return m_scanResult; }
     void setScanResult(const ScanResult &result);
 
+    bool cancelRequest() const { return m_cancelRequest; }
+    void setCancelRequest(bool chancelRequest);
+
 signals:
     void guiStateChanged();
     void rootDirectoryChanged();
     void scanResultChanged();
+    void cancelRequestChanged();
 
 private:
     explicit ApplicationState(QObject *parent = nullptr) : m_guiState(CHOOSE_DIRECTORY) {
@@ -55,6 +59,7 @@ private:
     GuiState m_guiState;
     QString m_rootDirectory;
     ScanResult m_scanResult;
+    bool m_cancelRequest;
 };
 
 #endif // APPLICATIONSTATE_H
