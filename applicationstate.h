@@ -25,7 +25,7 @@ struct ScanEntry {
     vector<shared_ptr<ScanEntry>> children;
 
     ~ScanEntry() {
-        qDebug() << QString::asprintf("~ScanEntry %p", this);
+        //qDebug() << QString::asprintf("~ScanEntry %p", this);
     }
 };
 

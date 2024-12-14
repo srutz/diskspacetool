@@ -74,13 +74,13 @@ void ResultsForm::showContextMenu(const QPoint &pos) {
         copyAction->setEnabled(false);
     }
     QPoint globalPos = treeView->mapToGlobal(pos);
-    QAction *action1 = contextMenu.addAction("Expand all");
-    QAction *action2 = contextMenu.addAction("Collapse all");
+    QAction *expandAction = contextMenu.addAction("Expand all");
+    QAction *collapseAction = contextMenu.addAction("Collapse all");
     QAction *selectedAction = contextMenu.exec(globalPos);
-    if (selectedAction == action1) {
-        QMessageBox::information(this, "Action Triggered", "Action 1 triggered");
-    } else if (selectedAction == action2) {
-        QMessageBox::information(this, "Action Triggered", "Action 2 triggered");
+    if (selectedAction == expandAction) {
+        treeView->expandAll();
+    } else if (selectedAction == collapseAction) {
+        treeView->collapseAll();
     } else if (selectedAction == copyAction) {
         QClipboard *clipboard = QApplication::clipboard();
         clipboard->setText(entry->path);
