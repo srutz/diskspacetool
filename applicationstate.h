@@ -4,6 +4,7 @@
 #include <QObject>
 #include <vector>
 #include <memory>
+#include <vector>
 
 using namespace std;
 
@@ -18,6 +19,7 @@ struct ScanEntry {
     qint64 size;
     int fileCount;
     ScanEntry* parent = nullptr;
+    vector<shared_ptr<ScanEntry>> children;
 };
 
 struct ScanResult {

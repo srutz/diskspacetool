@@ -1,0 +1,13 @@
+{
+        "editor.detectIndentation": false,
+        "editor.tabSize": 4,
+        "cmake.cmakePath": "/home/sr/Qt/Tools/CMake/bin/cmake",
+        "cmake.generator": "Unix Makefiles",
+        "cmake.configureArgs": [
+            "-DCMAKE_BUILD_TYPE=Debug",
+        ],
+        "files.associations": {
+            "qvboxlayout": "cpp",
+            "qlabel": "cpp"
+        },
+}

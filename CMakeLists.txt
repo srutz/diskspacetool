@@ -8,8 +8,8 @@ set(CMAKE_AUTORCC ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0")
 
-#find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
 
 set(PROJECT_SOURCES
@@ -29,7 +29,8 @@ set(PROJECT_SOURCES
     mainwindow.ui
 )
 
-qt_add_executable(diskspacetool MANUAL_FINALIZATION ${PROJECT_SOURCES})
+qt_add_executable(diskspacetool MANUAL_FINALIZATION ${PROJECT_SOURCES}
+    scanentrymodel.h scanentrymodel.cpp)
 
 target_link_libraries(diskspacetool PRIVATE Qt6::Widgets)
 qt_finalize_executable(diskspacetool)

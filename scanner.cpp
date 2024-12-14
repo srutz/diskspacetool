@@ -38,19 +38,27 @@ void Scanner::processDirectory(ScanResult &result, ScanEntry* parent, const QStr
     }
 
     auto files = dir.entryList(QDir::Files);
+    auto entry = make_shared<ScanEntry>(ScanEntry{
+        .path = directoryPath,
+        //.size = dirSize,
+        //.fileCount = count,
+        .parent = parent,
+    });
     qint64 dirSize = 0;
-    int count;
-    for (const QString &file : files) {
-        QFile f(file);
+    int count = 0;
+    for (const QString &fileName : files) {
+        QString fullFileName = dir.filePath(fileName);
+        QFile f(fullFileName);
+        auto exits = f.exists();
+        qDebug() << fileName;
         dirSize += f.size();
         count++;
     }
-    auto entry = make_shared<ScanEntry>(ScanEntry{
-        .path = directoryPath,
-        .size = dirSize,
-        .fileCount = count,
-        .parent = parent,
-    });
+    entry->fileCount = count;
+    entry->size = dirSize;
+    if (parent) {
+        parent->children.push_back(entry);
+    }
 
     result.entries.emplace_back(entry);
     emit progress(directoryPath, result.entries.size());
@@ -60,4 +68,5 @@ void Scanner::processDirectory(ScanResult &result, ScanEntry* parent, const QStr
         QString subDirPath = dir.absoluteFilePath(subDir);
         processDirectory(result, entry.get(), subDirPath);
     }
+
 }
