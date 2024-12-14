@@ -1,6 +1,7 @@
 #ifndef APPLICATIONSTATE_H
 #define APPLICATIONSTATE_H
 
+#include <QDebug>
 #include <QObject>
 #include <vector>
 #include <memory>
@@ -17,13 +18,19 @@ enum GuiState {
 struct ScanEntry {
     QString path;
     qint64 size;
+    qint64 localSize;
     int fileCount;
+    int localFileCount;
     ScanEntry* parent = nullptr;
     vector<shared_ptr<ScanEntry>> children;
+
+    ~ScanEntry() {
+        qDebug() << QString::asprintf("~ScanEntry %p", this);
+    }
 };
 
 struct ScanResult {
-    vector<shared_ptr<ScanEntry>> entries;
+    shared_ptr<ScanEntry> root;
 };
 
 class ApplicationState : public QObject

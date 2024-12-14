@@ -2,6 +2,7 @@
 #define RESULTSFORM_H
 
 #include <QWidget>
+#include <memory>
 #include "applicationstate.h"
 
 class ResultsForm : public QWidget
@@ -12,9 +13,12 @@ public:
     virtual ~ResultsForm();
 
 private:
-    ScanEntry* m_root;
+    shared_ptr<ScanEntry> m_root;
 
 signals:
+
+private slots:
+    void showContextMenu(const QPoint &pos);
 };
 
 #endif // RESULTSFORM_H

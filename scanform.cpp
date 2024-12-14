@@ -22,12 +22,12 @@ ScanForm::ScanForm(QWidget *parent)
 
     QWidget *labelPanel = new QWidget(this);
     auto label = new QLabel("Scanning ...", this);
-    label->setSizePolicy(QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Minimum));
-    //label->setFixedWidth(this->width());
-    label->setAlignment(Qt::AlignCenter);
-    label->setWordWrap(false);
+    label->setFixedHeight(320);
+    label->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
+    label->setAlignment(Qt::AlignHCenter);
+    label->setWordWrap(true);
     auto labelPanelLayout = new QHBoxLayout(labelPanel);
-    labelPanelLayout->addWidget(label);
+    labelPanelLayout->addWidget(label, 0, Qt::AlignJustify);
 
     auto state = ApplicationState::instance();
 
@@ -43,10 +43,10 @@ ScanForm::ScanForm(QWidget *parent)
     buttonPanelLayout->addWidget(cancelButton);
 
     auto contentLayout = new QVBoxLayout(content);
-    contentLayout->addStretch();
-    contentLayout->addWidget(labelPanel);
     contentLayout->addSpacing(32);
     contentLayout->addWidget(progressBar);
+    contentLayout->addSpacing(32);
+    contentLayout->addWidget(labelPanel);
     contentLayout->addStretch();
     contentLayout->addWidget(buttonPanel);
 

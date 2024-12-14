@@ -34,6 +34,9 @@ int ScanEntryModel::rowCount(const QModelIndex& parent) const  {
         return 0;
 
     ScanEntry* parentEntry = parent.isValid() ? static_cast<ScanEntry*>(parent.internalPointer()) : root;
+    if (parentEntry == nullptr) {
+        return 0;
+    }
     return parentEntry->children.size();
 }
 

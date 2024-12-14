@@ -30,7 +30,8 @@ set(PROJECT_SOURCES
 )
 
 qt_add_executable(diskspacetool MANUAL_FINALIZATION ${PROJECT_SOURCES}
-    scanentrymodel.h scanentrymodel.cpp)
+    scanentrymodel.h scanentrymodel.cpp
+    aligndelegate.h aligndelegate.cpp)
 
 target_link_libraries(diskspacetool PRIVATE Qt6::Widgets)
 qt_finalize_executable(diskspacetool)

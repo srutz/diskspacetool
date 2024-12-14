@@ -23,7 +23,7 @@ signals:
     void progress(const QString &currentPath, int counter);
 
 private:
-    void processDirectory(ScanResult &result, ScanEntry* parent, const QString &directoryPath);
+    shared_ptr<ScanEntry> processDirectory(ScanEntry* parent, const QString &directoryPath);
 };
 
 #endif // SCANNER_H

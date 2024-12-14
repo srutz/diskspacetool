@@ -14,7 +14,7 @@
 class Toast : public QWidget {
     Q_OBJECT
 public:
-    explicit Toast(const QString &message, int duration = 3000, QWidget *parent = nullptr)
+    explicit Toast(const QString &message, int duration, QWidget *parent = nullptr)
             : QWidget(parent) {
         setWindowFlags(Qt::FramelessWindowHint | Qt::Tool | Qt::WindowStaysOnTopHint);
         setAttribute(Qt::WA_TranslucentBackground);
@@ -39,13 +39,13 @@ public:
         show();
     }
 
-    static void showToast(QWidget *widget, const QString &message) {
+    static void showToast(QWidget *widget, const QString &message, int duration = 3000) {
         // Show a toast notification at the top center of the main window
         auto mainWindow = Util::getMainWindow(widget);
         if (!mainWindow) {
             qDebug() << "no window avail";
         }
-        Toast *toast = new Toast(message);
+        Toast *toast = new Toast(message, duration);
         toast->resize(300, 50);
         toast->showAtTopCenterOf(mainWindow);
     }
