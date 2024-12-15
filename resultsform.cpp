@@ -13,6 +13,7 @@
 #include "scanentrymodel.h"
 #include "aligndelegate.h"
 #include "toast.h"
+#include "util.h"
 
 ResultsForm::ResultsForm(QWidget *parent)
     : QWidget{parent}, m_root(nullptr)
@@ -66,6 +67,7 @@ void ResultsForm::showContextMenu(const QPoint &pos) {
     QMenu contextMenu;
     ScanEntry *entry = nullptr;
 
+    QAction *openAction = contextMenu.addAction("Open path");
     QAction *copyAction = contextMenu.addAction("Copy path to clipboard");
     if (index.isValid()) {
         auto item = treeView->model()->data(index);
@@ -73,6 +75,7 @@ void ResultsForm::showContextMenu(const QPoint &pos) {
     } else {
         copyAction->setEnabled(false);
     }
+    contextMenu.addSeparator();
     QPoint globalPos = treeView->mapToGlobal(pos);
     QAction *expandAction = contextMenu.addAction("Expand all");
     QAction *collapseAction = contextMenu.addAction("Collapse all");
@@ -85,5 +88,7 @@ void ResultsForm::showContextMenu(const QPoint &pos) {
         QClipboard *clipboard = QApplication::clipboard();
         clipboard->setText(entry->path);
         Toast::showToast(this, "Path copied to clipboard", 500);
+    } else if (selectedAction == openAction) {
+        Util::openLocalFile(entry->path);
     }
 }

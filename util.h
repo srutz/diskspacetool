@@ -22,6 +22,8 @@ struct Util {
         return -1;
     }
 
+    static void openLocalFile(const QString &file);
+
 };
 
 #endif // UTIL_H
