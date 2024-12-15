@@ -24,6 +24,8 @@ struct Util {
 
     static void openLocalFile(const QString &file);
 
+    static QString basename(const QString &path);
+
 };
 
 #endif // UTIL_H

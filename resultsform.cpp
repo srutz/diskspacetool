@@ -26,15 +26,23 @@ ResultsForm::ResultsForm(QWidget *parent)
     auto treeView = new QTreeView(this);
     treeView->setObjectName("treeview");
     treeView->setContextMenuPolicy(Qt::CustomContextMenu);
-    treeView->setItemDelegateForColumn(1, new AlignDelegate(1, Qt::AlignRight | Qt::AlignVCenter, treeView));
-    treeView->setItemDelegateForColumn(2, new AlignDelegate(2, Qt::AlignRight | Qt::AlignVCenter, treeView));
+
+    auto rightAlign = [=](int column) {
+        treeView->setItemDelegateForColumn(column, new AlignDelegate(column, Qt::AlignRight | Qt::AlignVCenter, treeView));
+    };
+
+    rightAlign(1);
+    rightAlign(2);
+    rightAlign(3);
     connect(treeView, &QTreeView::customContextMenuRequested, this, &ResultsForm::showContextMenu);
 
+    auto titleLabel = new QLabel("", this);
     auto tabs = new QTabWidget(this);
     tabs->setTabBarAutoHide(true);
     tabs->addTab(treeView, "TreeView");
 
     auto contentLayout = new QVBoxLayout(content);
+    contentLayout->addWidget(titleLabel);
     contentLayout->addWidget(tabs);
 
     auto state = ApplicationState::instance();
@@ -53,6 +61,10 @@ ResultsForm::ResultsForm(QWidget *parent)
             auto model = new ScanEntryModel(m_root.get());
             treeView->setModel(model);
             treeView->setColumnWidth(0, 400);
+
+            auto title = QString("Scanresults for %1").arg(m_root->path);
+            titleLabel->setText(title);
+
         }
     });
 }
@@ -70,9 +82,9 @@ void ResultsForm::showContextMenu(const QPoint &pos) {
     QAction *openAction = contextMenu.addAction("Open path");
     QAction *copyAction = contextMenu.addAction("Copy path to clipboard");
     if (index.isValid()) {
-        auto item = treeView->model()->data(index);
         entry = static_cast<ScanEntry*>(index.internalPointer());
     } else {
+        openAction->setEnabled(false);
         copyAction->setEnabled(false);
     }
     contextMenu.addSeparator();
@@ -87,7 +99,7 @@ void ResultsForm::showContextMenu(const QPoint &pos) {
     } else if (selectedAction == copyAction) {
         QClipboard *clipboard = QApplication::clipboard();
         clipboard->setText(entry->path);
-        Toast::showToast(this, "Path copied to clipboard", 500);
+        Toast::showToast(this, "Path copied to clipboard", 750);
     } else if (selectedAction == openAction) {
         Util::openLocalFile(entry->path);
     }

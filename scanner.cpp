@@ -6,6 +6,7 @@
 
 struct CancelException {};
 
+
 void dumpScanEntry(ScanEntry *entry, int depth = 0) {
     if (!entry) {
         return;
@@ -36,7 +37,10 @@ void Scanner::startWork() {
     ScanResult result;
     try {
         auto root = processDirectory(nullptr, state->rootDirectory());
-        //dumpScanEntry(root.get());
+        double totalSize = root->size;
+        ScanEntry::traverse(root.get(), [totalSize](auto entry, auto depth) {
+            entry->percent = entry->size / totalSize;
+        });
         result.root = root;
         state->setScanResult(result);
         emit completed();
@@ -69,6 +73,7 @@ shared_ptr<ScanEntry> Scanner::processDirectory(ScanEntry* parent, const QString
         .path = directoryPath,
         .size = dirSize,
         .localSize = dirSize,
+        .percent = 0,
         .fileCount = count,
         .localFileCount = count,
         .parent = parent,

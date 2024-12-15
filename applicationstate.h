@@ -19,6 +19,8 @@ struct ScanEntry {
     QString path;
     qint64 size;
     qint64 localSize;
+    double percent;
+
     int fileCount;
     int localFileCount;
     ScanEntry* parent = nullptr;
@@ -27,6 +29,31 @@ struct ScanEntry {
     ~ScanEntry() {
         //qDebug() << QString::asprintf("~ScanEntry %p", this);
     }
+
+    /* run through the entries pre-order */
+    template<typename V>
+    static void traverse(ScanEntry *entry, V visitor, int depth = 0) {
+        if (!entry) {
+            return;
+        }
+        visitor(entry, depth);
+        for (auto &child : entry->children) {
+            traverse(child.get(), visitor, depth + 1);
+        }
+    }
+
+    /* run through the entries post-order */
+    template<typename V>
+    static void traversePostOrder(ScanEntry *entry, V visitor, int depth = 0) {
+        if (!entry) {
+            return;
+        }
+        for (auto &child : entry->children) {
+            traversePostOrder(child.get(), visitor, depth + 1);
+        }
+        visitor(entry, depth);
+    }
+
 };
 
 struct ScanResult {

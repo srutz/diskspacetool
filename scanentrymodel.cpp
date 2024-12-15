@@ -1,15 +1,17 @@
 #include "scanentrymodel.h"
+#include <QLocale>
+
+static QLocale systemLocale = QLocale::system();
 
 QModelIndex ScanEntryModel::index(int row, int column, const QModelIndex& parent) const {
     if (!hasIndex(row, column, parent))
         return QModelIndex();
 
     ScanEntry* parentEntry = parent.isValid() ? static_cast<ScanEntry*>(parent.internalPointer()) : root;
-    ScanEntry* childEntry = parentEntry->children.at(row).get();
-
-    if (childEntry)
-        return createIndex(row, column, childEntry);
-
+    shared_ptr<ScanEntry> childEntry = parentEntry->children.at(row);
+    if (childEntry) {
+        return createIndex(row, column, childEntry.get());
+    }
     return QModelIndex();
 }
 
@@ -25,7 +27,6 @@ QModelIndex ScanEntryModel::parent(const QModelIndex& child) const  {
 
     ScanEntry* grandParentEntry = parentEntry->parent;
     int row = grandParentEntry ? Util::indexOf(grandParentEntry->children, parentEntry) : 0;
-
     return createIndex(row, 0, parentEntry);
 }
 
@@ -41,7 +42,7 @@ int ScanEntryModel::rowCount(const QModelIndex& parent) const  {
 }
 
 int ScanEntryModel::columnCount(const QModelIndex& parent) const  {
-    return 3; // Path, Size, File Count
+    return 4; // Path, Size, File Count, Percent
 }
 
 QVariant ScanEntryModel::data(const QModelIndex& index, int role) const  {
@@ -50,9 +51,10 @@ QVariant ScanEntryModel::data(const QModelIndex& index, int role) const  {
 
     ScanEntry* entry = static_cast<ScanEntry*>(index.internalPointer());
     switch (index.column()) {
-    case 0: return entry->path;
-    case 1: return entry->size;
+    case 0: return Util::basename(entry->path);
+    case 1: return systemLocale.toString(entry->size);
     case 2: return entry->fileCount;
+    case 3: return QString("%1").arg(entry->percent * 100, 0, 'f', 3);;
     default: return QVariant();
     }
 }
@@ -65,6 +67,7 @@ QVariant ScanEntryModel::headerData(int section, Qt::Orientation orientation, in
     case 0: return "Path";
     case 1: return "Size";
     case 2: return "File Count";
+    case 3: return "% of Scan";
     default: return QVariant();
     }
 }

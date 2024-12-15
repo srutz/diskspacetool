@@ -1,5 +1,6 @@
 #include "util.h"
 #include <QUrl>
+#include <QFileInfo>
 #include <QDesktopServices>
 
 
@@ -14,3 +15,8 @@ void Util::openLocalFile(const QString &path) {
     }
 }
 
+QString Util::basename(const QString& path) {
+    QFileInfo fileInfo(path);
+    QString lastComponent = fileInfo.fileName();
+    return lastComponent;
+}
